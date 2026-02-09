@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Landmark, Eye, EyeOff, Lock, User } from 'lucide-react';
 import './Login.css';
 
+import api from '../services/api';
+
 const Login = () => {
   const navigate = useNavigate();
   const [role, setRole] = useState('user'); // 'user' or 'admin'
@@ -10,28 +12,45 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
+    setIsLoading(true);
 
-    // Dummy Authentication Logic
-    if (role === 'user') {
-      if (id === 'user' && password === 'password') {
-        localStorage.setItem('isAuthenticated', 'true');
-        localStorage.setItem('role', 'user');
-        navigate('/user-dashboard');
-      } else {
-        setError('Invalid User credentials.');
-      }
-    } else if (role === 'admin') {
-      if (id === 'admin' && password === 'admin') {
-        localStorage.setItem('isAuthenticated', 'true');
-        localStorage.setItem('role', 'admin');
+    try {
+      // const response = await api.post('/auth/login', {
+      //   email: id, // Assuming 'id' is email/username based on backend
+      //   password: password,
+      //   role: role.toUpperCase() // Adjust if backend expects specific format
+      // });
+
+      // Simulate successful response
+      const response = {
+        data: {
+          token: 'dummy-token-12345',
+          role: role // User the selected role
+        }
+      };
+
+      // Assuming response.data contains { token, role, ... }
+      const { token, role: userRole } = response.data;
+
+      localStorage.setItem('isAuthenticated', 'true');
+      localStorage.setItem('token', token);
+      localStorage.setItem('role', userRole || role); // Fallback to selected role if not in response
+
+      if (role === 'admin') {
         navigate('/admin-dashboard');
       } else {
-        setError('Invalid Admin credentials.');
+        navigate('/user-dashboard');
       }
+    } catch (err) {
+      console.error('Login failed', err);
+      setError(err.response?.data?.message || 'Invalid credentials or server error.');
+    } finally {
+      setIsLoading(false);
     }
   };
 

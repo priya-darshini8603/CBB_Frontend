@@ -59,6 +59,9 @@ const LoanApplication = () => {
                     <span className="brand-name">Bank</span>
                 </div>
                 <div className="nav-right">
+                    <button className="loan-back-btn" onClick={() => navigate('/user-dashboard')}>
+                        <ArrowLeft size={16} /> Back to Dashboard
+                    </button>
                     <div className="profile-wrapper">
                         <UserCircle size={32} color="#9CA3AF" />
                     </div>

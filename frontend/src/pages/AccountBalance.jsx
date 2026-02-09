@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Landmark, ArrowLeft } from 'lucide-react';
+import { Landmark, ArrowLeft, UserCircle } from 'lucide-react';
 import './AccountBalance.css';
 
 const AccountBalance = () => {
@@ -15,12 +15,14 @@ const AccountBalance = () => {
                         <Landmark size={20} color="black" />
                     </div>
                     <span className="ab-brand-name">Bank</span>
-                    <div style={{ width: '24px' }}></div> {/* Spacer */}
+                </div>
+                <div className="ab-nav-right">
                     <button className="ab-back-btn" onClick={() => navigate('/user-dashboard')}>
                         <ArrowLeft size={16} /> Back to Dashboard
                     </button>
-                </div>
-                <div className="ab-nav-right">
+                    <div className="ab-profile-circle">
+                        <UserCircle size={32} color="#D1D5DB" fill="#F3F4F6" />
+                    </div>
                 </div>
             </nav>
 
@@ -48,9 +50,9 @@ const AccountBalance = () => {
                     */}
                 </div>
 
-                <div className="ab-security-note">
+                {/* <div className="ab-security-note">
                     <span className="secure-icon">🛡️</span> Encrypted connection • Last updated just now
-                </div>
+                </div> */}
             </div>
 
             <footer className="ab-footer">

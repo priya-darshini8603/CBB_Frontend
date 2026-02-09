@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
+* {
+    box-sizing: border-box;
+}
+
 .loan-container {
     min-height: 100vh;
     background-color: #F9FAFB;
@@ -39,7 +43,26 @@
 .nav-right {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 32px;
+}
+
+.loan-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.loan-back-btn:hover {
+    background-color: #F3F4F6;
 }
 
 .icon-wrapper {
@@ -60,33 +83,32 @@
 }
 
 /* Content Area */
+/* Content Area */
 .loan-content {
-    display: flex;
-    justify-content: center;
-    padding: 40px 60px;
-    /* Increased side spacing */
+    display: grid;
+    grid-template-columns: 600px 1fr;
+    gap: 60px;
+    padding: 60px 80px;
 }
 
 /* Wide Card Layout (Updated) */
 .loan-card {
     background: white;
-    width: 100%;
-    max-width: 100%;
-    /* Changed from 650px → Wide layout */
     padding: 40px;
-    border-radius: 12px;
+    border-radius: 16px;
+    border: 1px solid #E5E7EB;
 }
 
 /* Titles */
 .loan-title {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 700;
     color: #111827;
     margin: 0 0 4px 0;
 }
 
 .loan-subtitle {
-    font-size: 14px;
+    font-size: 16px;
     color: #6B7280;
     margin: 0 0 20px 0;
 }
@@ -109,7 +131,7 @@
 }
 
 .section-header {
-    font-size: 16px;
+    font-size: 20px;
     font-weight: 700;
     margin-bottom: 20px;
     color: #111827;
@@ -122,7 +144,7 @@
 
 .form-group label {
     display: block;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 600;
     color: #111827;
     margin-bottom: 8px;
@@ -134,7 +156,7 @@
     background-color: #F3F4F6;
     border: none;
     border-radius: 6px;
-    font-size: 14px;
+    font-size: 16px;
     color: #111827;
 }
 
@@ -160,7 +182,7 @@
     background-color: white;
     border: 1px solid #E5E7EB;
     border-radius: 6px;
-    font-size: 14px;
+    font-size: 16px;
     color: #111827;
     cursor: pointer;
 }
@@ -188,7 +210,7 @@
     padding: 12px 24px;
     border-radius: 8px;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 16px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -204,7 +226,7 @@
     padding: 12px 24px;
     border-radius: 8px;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 16px;
     cursor: pointer;
     display: flex;
     align-items: center;

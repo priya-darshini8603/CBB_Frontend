@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import UserDashboard from './pages/UserDashboard';
 import AdminDashboard from './pages/AdminDashboard';
@@ -45,45 +45,43 @@ const PublicRoute = ({ children }) => {
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <PublicRoute>
-              <Login />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/user-dashboard"
-          element={
-            <ProtectedRoute allowedRole="user">
-              <UserDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin-dashboard"
-          element={
-            <ProtectedRoute allowedRole="admin">
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/signup" element={<SignupWizard />} />
-        <Route path="/create-account" element={<SignupSteps />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/deposit-withdraw" element={<DepositWithdraw />} />
-        <Route path="/loan-application" element={<LoanApplication />} />
-        <Route path="/loan-status" element={<LoanStatus />} />
-        <Route path="/transaction-history" element={<TransactionHistory />} />
-        <Route path="/account-balance" element={<AccountBalance />} />
-        <Route path="/loan-approval" element={<LoanApproval />} />
-        <Route path="/admin-transactions" element={<AdminTransactionHistory />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Router>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/user-dashboard"
+        element={
+          <ProtectedRoute allowedRole="user">
+            <UserDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin-dashboard"
+        element={
+          <ProtectedRoute allowedRole="admin">
+            <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="/signup" element={<SignupWizard />} />
+      <Route path="/create-account" element={<SignupSteps />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/deposit-withdraw" element={<DepositWithdraw />} />
+      <Route path="/loan-application" element={<LoanApplication />} />
+      <Route path="/loan-status" element={<LoanStatus />} />
+      <Route path="/transaction-history" element={<TransactionHistory />} />
+      <Route path="/account-balance" element={<AccountBalance />} />
+      <Route path="/loan-approval" element={<LoanApproval />} />
+      <Route path="/admin-transactions" element={<AdminTransactionHistory />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }
 

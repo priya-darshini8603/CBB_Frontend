@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Landmark, ArrowLeft } from 'lucide-react';
+import { Landmark, ArrowLeft, UserCircle } from 'lucide-react';
 import './LoanStatus.css';
 
 const LoanStatus = () => {
@@ -20,6 +20,9 @@ const LoanStatus = () => {
                     <button className="ls-back-btn" onClick={() => navigate('/user-dashboard')}>
                         <ArrowLeft size={16} /> Back to Dashboard
                     </button>
+                    <div className="ls-profile-circle">
+                        <UserCircle size={32} color="#D1D5DB" fill="#F3F4F6" />
+                    </div>
                 </div>
             </nav>
 

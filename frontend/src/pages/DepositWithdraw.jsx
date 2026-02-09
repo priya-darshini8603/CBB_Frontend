@@ -26,9 +26,14 @@ const DepositWithdraw = () => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
+    const [error, setError] = useState('');
+
     const handleNext = () => {
         if (formData.accountNumber && formData.amount) {
             setStep(2);
+            setError('');
+        } else {
+            setError('Please fill in all required fields.');
         }
     };
 
@@ -53,8 +58,10 @@ const DepositWithdraw = () => {
                     <span className="dw-brand-name">Bank</span>
                 </div>
 
-
                 <div className="dw-nav-right">
+                    <button className="dw-back-btn" onClick={() => navigate('/user-dashboard')}>
+                        <ArrowLeft size={16} /> Back to Dashboard
+                    </button>
                     <div className="profile-circle">
                         <UserCircle size={32} color="#D1D5DB" fill="#F3F4F6" />
                     </div>
@@ -88,7 +95,7 @@ const DepositWithdraw = () => {
                                     <option value="Deposit">Deposit</option>
                                     <option value="Transfer">Transfer</option>
                                 </select>
-                                <ChevronDown className="select-icon" size={16} />
+                                {/* <ChevronDown className="select-icon" size={16} /> */}
                             </div>
                         </div>
 
@@ -128,6 +135,7 @@ const DepositWithdraw = () => {
                             />
                         </div>
 
+                        {error && <p className="error-message" style={{ color: 'red', fontSize: '14px', marginBottom: '10px' }}>{error}</p>}
                         <div className="dw-actions">
                             <button className="dw-btn-outline" onClick={() => navigate('/user-dashboard')}>
                                 <ArrowLeft size={16} /> Cancel
@@ -185,9 +193,9 @@ const DepositWithdraw = () => {
                     </div>
                 )}
 
-                <div className="dw-footer">
+                {/* <div className="dw-footer">
                     <Lock size={12} /> Your transaction is encrypted and secure.
-                </div>
+                </div> */}
             </div>
         </div>
     );
