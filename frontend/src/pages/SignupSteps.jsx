@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Landmark, ArrowLeft, Info, Smartphone } from 'lucide-react';
 import './SignupSteps.css';
+import { registerUser } from "../services/authService";
 
 const SignupSteps = () => {
     const navigate = useNavigate();
@@ -39,16 +40,45 @@ const SignupSteps = () => {
         setStep(1);
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (!formData.email || !formData.phone) {
-            setError('Please complete the data before submitting.');
-            return;
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!formData.email || !formData.phone) {
+        setError("Please complete the data before submitting.");
+        return;
+    }
+
+    try {
+        setError("");
+
+        const payload = {
+            fullName: formData.firstName + " " + formData.lastName,
+            email: formData.email,
+            password: "Password@123",   // temporary default password
+            phone: formData.phone,
+            role: "CUSTOMER"
+        };
+
+        console.log("Sending to backend:", payload);
+
+        const response = await registerUser(payload);
+
+        console.log("Backend response:", response.data);
+
+        alert("User Registered Successfully ✅");
+
+        navigate("/user-dashboard");
+
+    } catch (error) {
+        console.error("Registration error:", error);
+
+        if (error.response) {
+            alert("Error: " + error.response.data);
+        } else {
+            alert("Backend not reachable ❌");
         }
-        setError('');
-        console.log('Wizard submitted:', formData);
-        navigate('/user-dashboard'); // Return to dashboard or success page
-    };
+    }
+};
 
     return (
         <div className="wizard-container">
