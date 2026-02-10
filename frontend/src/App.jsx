@@ -54,22 +54,9 @@ function App() {
           </PublicRoute>
         }
       />
-      <Route
-        path="/user-dashboard"
-        element={
-          <ProtectedRoute allowedRole="user">
-            <UserDashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin-dashboard"
-        element={
-          <ProtectedRoute allowedRole="admin">
-            <AdminDashboard />
-          </ProtectedRoute>
-        }
-      />
+     <Route path="/user-dashboard" element={<UserDashboard />} />
+     <Route path="/admin-dashboard" element={<AdminDashboard />} />
+
       <Route path="/signup" element={<SignupWizard />} />
       <Route path="/create-account" element={<SignupSteps />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
