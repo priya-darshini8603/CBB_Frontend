@@ -4,6 +4,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import UserDashboard from './pages/UserDashboard';
+import UsersList from "./pages/UsersList";
 import AdminDashboard from './pages/AdminDashboard';
 import SignupWizard from './pages/SignupWizard';
 import SignupSteps from './pages/SignupSteps';
@@ -17,70 +18,39 @@ import AccountBalance from './pages/AccountBalance';
 import LoanApproval from './pages/LoanApproval';
 import AdminTransactionHistory from './pages/AdminTransactionHistory';
 
-
 // ================= PROTECTED ROUTE =================
 const ProtectedRoute = ({ children, allowedRole }) => {
   const isAuth = localStorage.getItem('isAuthenticated');
   const role = localStorage.getItem('role');
 
-  if (isAuth !== 'true') {
-    return <Navigate to="/" replace />;
-  }
+  if (isAuth !== 'true') return <Navigate to="/" replace />;
 
   if (allowedRole && role !== allowedRole) {
-    return (
-      <Navigate
-        to={role === 'admin' ? '/admin-dashboard' : '/user-dashboard'}
-        replace
-      />
-    );
+    return <Navigate to={role === 'admin' ? '/admin-dashboard' : '/user-dashboard'} replace />;
   }
 
   return children;
 };
-
-
-// ================= PUBLIC ROUTE =================
-const PublicRoute = ({ children }) => {
-  return children;
-};
-
 
 function App() {
   return (
     <Routes>
 
-      {/* LOGIN */}
-      <Route
-        path="/"
-        element={
-          <PublicRoute>
-            <Login />
-          </PublicRoute>
-        }
+      <Route path="/" element={<Login />} />
+
+      <Route path="/user-dashboard"
+        element={<ProtectedRoute allowedRole="user"><UserDashboard /></ProtectedRoute>}
       />
 
-      {/* USER DASHBOARD */}
-      <Route
-        path="/user-dashboard"
-        element={
-          <ProtectedRoute allowedRole="user">
-            <UserDashboard />
-          </ProtectedRoute>
-        }
+      <Route path="/admin-dashboard"
+        element={<ProtectedRoute allowedRole="admin"><AdminDashboard /></ProtectedRoute>}
       />
 
-      {/* ADMIN DASHBOARD */}
-      <Route
-        path="/admin-dashboard"
-        element={
-          <ProtectedRoute allowedRole="admin">
-            <AdminDashboard />
-          </ProtectedRoute>
-        }
+      <Route path="/admin-users"
+        element={<ProtectedRoute allowedRole="admin"><UsersList /></ProtectedRoute>}
       />
+
       <Route path="/signup" element={<Register />} />
-      <Route path="/signup" element={<SignupWizard />} />
       <Route path="/create-account" element={<SignupSteps />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/deposit-withdraw" element={<DepositWithdraw />} />
@@ -90,10 +60,13 @@ function App() {
       <Route path="/account-balance" element={<AccountBalance />} />
       <Route path="/loan-approval" element={<LoanApproval />} />
       <Route path="/admin-transactions" element={<AdminTransactionHistory />} />
+<<<<<<< HEAD
       <Route path="/loan-emi" element={<LoanEmi/>}/>
       {/* DEFAULT */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+=======
 
+>>>>>>> login-integration
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
