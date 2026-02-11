@@ -1,0 +1,192 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+.th-container {
+    min-height: 100vh;
+    background-color: #F9FAFB;
+    font-family: 'Inter', sans-serif;
+    color: #111827;
+    position: relative;
+}
+
+/* Navbar */
+.th-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+    height: 64px;
+    background: white;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.th-nav-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.th-logo-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.th-brand-name {
+    font-weight: 700;
+    font-size: 18px;
+    color: #111827;
+}
+
+.th-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.icon-wrapper {
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+}
+
+.icon-wrapper:hover {
+    background-color: #F3F4F6;
+}
+
+.profile-wrapper {
+    cursor: pointer;
+}
+
+/* Main Content */
+.th-content {
+    padding: 40px 60px;
+    display: flex;
+    justify-content: center;
+}
+
+.th-card {
+    background: white;
+    width: 100%;
+    max-width: 100%;
+    /* Full width as requested previously for similar dashboards */
+    border-radius: 12px;
+    border: 1px solid #E5E7EB;
+    overflow: hidden;
+}
+
+.th-header {
+    padding: 32px 32px 24px 32px;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+.th-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 4px 0;
+}
+
+.th-subtitle {
+    font-size: 14px;
+    color: #6B7280;
+    margin: 0;
+}
+
+/* Table */
+.th-table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.th-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.th-table th {
+    background-color: #F9FAFB;
+    color: #4B5563;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 16px 32px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.th-table td {
+    padding: 20px 32px;
+    font-size: 14px;
+    color: #111827;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.empty-row td {
+    text-align: center;
+    color: #9CA3AF;
+    padding: 60px;
+    font-style: italic;
+}
+
+/* Pagination */
+.th-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 32px;
+    background-color: white;
+}
+
+.th-pagination span {
+    font-size: 14px;
+    color: #6B7280;
+}
+
+.pagination-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.pagination-controls button {
+    padding: 8px 16px;
+    border: 1px solid #E5E7EB;
+    background: white;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #374151;
+    cursor: pointer;
+}
+
+.pagination-controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination-controls button.active {
+    background-color: #2563EB;
+    color: white;
+    border-color: #2563EB;
+}
+
+/* Floating Back Button */
+/* Back Button (Header) */
+.th-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-right: 16px;
+}
+
+.th-back-btn:hover {
+    background-color: #F3F4F6;
+}

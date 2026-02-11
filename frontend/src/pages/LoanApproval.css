@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+.la-container {
+    min-height: 100vh;
+    background-color: #F9FAFB;
+    font-family: 'Inter', sans-serif;
+    color: #111827;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navbar */
+.la-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+    height: 64px;
+    background: white;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.la-nav-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.la-logo-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.la-brand-name {
+    font-weight: 700;
+    font-size: 18px;
+    color: #111827;
+}
+
+.la-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.la-profile-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.la-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.la-back-btn:hover {
+    background-color: #F3F4F6;
+}
+
+.la-content {
+    display: grid;
+    grid-template-columns: 600px 1fr;
+    gap: 60px;
+    padding: 60px 80px;
+    align-items: start;
+}
+
+.la-card {
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    border: 1px solid #E5E7EB;
+}
+
+.la-page-header {
+    margin-bottom: 24px;
+}
+
+.la-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 8px 0;
+}
+
+.la-subtitle {
+    font-size: 14px;
+    color: #6B7280;
+    margin: 0;
+}
+
+.la-divider {
+    height: 1px;
+    background-color: #F3F4F6;
+    width: 100%;
+}
+
+.la-empty-state {
+    padding: 60px;
+    text-align: center;
+    color: #9CA3AF;
+    font-style: italic;
+}
