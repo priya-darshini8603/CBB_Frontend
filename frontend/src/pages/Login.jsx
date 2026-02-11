@@ -61,26 +61,17 @@ const Login = () => {
 
       const token = res.data;
 
-      // 🔐 SAVE TOKEN
       localStorage.setItem('token', token);
       localStorage.setItem('isAuthenticated', 'true');
 
-      // 🔎 READ ROLE FROM JWT
       const payload = JSON.parse(atob(token.split('.')[1]));
-      const roleFromToken = payload.role; // ADMIN / CUSTOMER
+      const roleFromToken = payload.role;
 
-      // ⭐ NORMALIZE ROLE
       const role = roleFromToken === "ADMIN" ? "admin" : "user";
-
-      // 🔐 SAVE ROLE
       localStorage.setItem('role', role);
 
-      // 🚀 REDIRECT
-      if (role === "admin") {
-        navigate('/admin-dashboard');
-      } else {
-        navigate('/user-dashboard');
-      }
+      if (role === "admin") navigate('/admin-dashboard');
+      else navigate('/user-dashboard');
 
     } catch (err) {
       console.log(err);
@@ -133,7 +124,31 @@ const Login = () => {
             </div>
           </div>
 
-          {error && <div className="error-message">{error}</div>}
+          <p className="forgot-link">
+  <span onClick={() => navigate("/forgot-password")}>
+    Forgot Password?
+  </span>
+</p>
+
+          {/* ERROR + REGISTER BUTTON */}
+          {error && (
+            <div className="error-message">
+              {error}
+
+              {error === "User not registered" && (
+                <div style={{ marginTop: "10px" }}>
+                  <button
+                    type="button"
+                    className="submit-btn"
+                    style={{ background: "#16a34a" }}
+                    onClick={() => navigate('/signup')}
+                  >
+                    Register Now
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
 
           <button className="submit-btn" disabled={isLoading}>
             <Lock size={16} />

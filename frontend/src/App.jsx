@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 import Login from './pages/Login';
+import Register from './pages/Register';
 import UserDashboard from './pages/UserDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import SignupWizard from './pages/SignupWizard';
@@ -77,7 +78,7 @@ function App() {
           </ProtectedRoute>
         }
       />
-
+      <Route path="/signup" element={<Register />} />
       <Route path="/signup" element={<SignupWizard />} />
       <Route path="/create-account" element={<SignupSteps />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
