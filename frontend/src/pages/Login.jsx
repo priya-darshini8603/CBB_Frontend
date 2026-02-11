@@ -33,11 +33,13 @@ const Login = () => {
       }
 
     } catch (err) {
-      const msg = err.response?.data;
+      console.error("Login Error:", err);
+      const responseData = err.response?.data;
+      const msg = typeof responseData === 'object' ? responseData.message : responseData;
 
       if (msg === "USER_NOT_FOUND") setError("User not registered");
       else if (msg === "INVALID_PASSWORD") setError("Wrong password");
-      else setError("Login failed");
+      else setError(msg || "Login failed");
     }
 
     setIsLoading(false);
@@ -61,17 +63,28 @@ const Login = () => {
 
       const token = res.data;
 
+      // 🔐 SAVE TOKEN
       localStorage.setItem('token', token);
       localStorage.setItem('isAuthenticated', 'true');
 
+      // 🔎 READ ROLE AND USER ID FROM JWT
       const payload = JSON.parse(atob(token.split('.')[1]));
-      const roleFromToken = payload.role;
+      const roleFromToken = payload.role; // ADMIN / CUSTOMER
+      const userId = payload.userId;
 
+      // ⭐ NORMALIZE ROLE
       const role = roleFromToken === "ADMIN" ? "admin" : "user";
-      localStorage.setItem('role', role);
 
-      if (role === "admin") navigate('/admin-dashboard');
-      else navigate('/user-dashboard');
+      // 🔐 SAVE ROLE AND USER ID
+      localStorage.setItem('role', role);
+      localStorage.setItem('userId', userId);
+
+      // 🚀 REDIRECT
+      if (role === "admin") {
+        navigate('/admin-dashboard');
+      } else {
+        navigate('/user-dashboard');
+      }
 
     } catch (err) {
       console.log(err);
@@ -124,31 +137,7 @@ const Login = () => {
             </div>
           </div>
 
-          <p className="forgot-link">
-  <span onClick={() => navigate("/forgot-password")}>
-    Forgot Password?
-  </span>
-</p>
-
-          {/* ERROR + REGISTER BUTTON */}
-          {error && (
-            <div className="error-message">
-              {error}
-
-              {error === "User not registered" && (
-                <div style={{ marginTop: "10px" }}>
-                  <button
-                    type="button"
-                    className="submit-btn"
-                    style={{ background: "#16a34a" }}
-                    onClick={() => navigate('/signup')}
-                  >
-                    Register Now
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
+          {error && <div className="error-message">{error}</div>}
 
           <button className="submit-btn" disabled={isLoading}>
             <Lock size={16} />
