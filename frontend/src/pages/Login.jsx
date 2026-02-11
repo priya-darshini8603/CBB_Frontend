@@ -33,69 +33,62 @@ const Login = () => {
       }
 
     } catch (err) {
+      const msg = err.response?.data;
 
-      const msg = err.response?.data;  // 🔴 FIXED
-
-      if (msg === "USER_NOT_FOUND") {
-        setError("User not registered");
-      }
-      else if (msg === "INVALID_PASSWORD") {
-        setError("Wrong password");
-      }
-      else {
-        setError("Login failed");
-      }
+      if (msg === "USER_NOT_FOUND") setError("User not registered");
+      else if (msg === "INVALID_PASSWORD") setError("Wrong password");
+      else setError("Login failed");
     }
 
     setIsLoading(false);
   };
 
   // ================= VERIFY OTP =================
-  // ================= VERIFY OTP =================
-const verifyOtp = async () => {
-
-  if (otp.length !== 6) {
-    setError("Enter valid OTP");
-    return;
-  }
-
-  setIsLoading(true);
-  setError('');
-
-  try {
-    const res = await api.post('/auth/verify-otp', {
-      email: id,
-      otp: otp
-    });
-
-    const token = res.data;
-
-    // 🔐 SAVE TOKEN
-    localStorage.setItem('token', token);
-    localStorage.setItem('isAuthenticated', 'true');
-
-    // 🔎 READ ROLE FROM JWT
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    const roleFromToken = payload.role;   // CUSTOMER / ADMIN
-
-    // ⭐ NORMALIZE ROLE (IMPORTANT)
-    const role = roleFromToken === "ADMIN" ? "admin" : "user";
-
-    localStorage.setItem('role', role === "ADMIN" ? "admin" : "user");
-    // 🚀 REDIRECT
-    if (role === "admin") {
-      navigate('/admin-dashboard');
-    } else {
-      navigate('/user-dashboard');
+  const verifyOtp = async () => {
+    if (otp.length !== 6) {
+      setError("Enter valid OTP");
+      return;
     }
 
-  } catch (err) {
-    console.log(err);
-    setError("Invalid or expired OTP");
-  }
+    setIsLoading(true);
+    setError('');
 
-  setIsLoading(false);
-};
+    try {
+      const res = await api.post('/auth/verify-otp', {
+        email: id,
+        otp: otp
+      });
+
+      const token = res.data;
+
+      // 🔐 SAVE TOKEN
+      localStorage.setItem('token', token);
+      localStorage.setItem('isAuthenticated', 'true');
+
+      // 🔎 READ ROLE FROM JWT
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const roleFromToken = payload.role; // ADMIN / CUSTOMER
+
+      // ⭐ NORMALIZE ROLE
+      const role = roleFromToken === "ADMIN" ? "admin" : "user";
+
+      // 🔐 SAVE ROLE
+      localStorage.setItem('role', role);
+
+      // 🚀 REDIRECT
+      if (role === "admin") {
+        navigate('/admin-dashboard');
+      } else {
+        navigate('/user-dashboard');
+      }
+
+    } catch (err) {
+      console.log(err);
+      setError("Invalid or expired OTP");
+    }
+
+    setIsLoading(false);
+  };
 
   return (
     <div className="login-container">

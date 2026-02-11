@@ -21,10 +21,17 @@ const ProtectedRoute = ({ children, allowedRole }) => {
   const isAuth = localStorage.getItem('isAuthenticated');
   const role = localStorage.getItem('role');
 
-  if (!isAuth) return <Navigate to="/" replace />;
+  if (isAuth !== 'true') {
+    return <Navigate to="/" replace />;
+  }
 
   if (allowedRole && role !== allowedRole) {
-    return <Navigate to={role === 'admin' ? '/admin-dashboard' : '/user-dashboard'} replace />;
+    return (
+      <Navigate
+        to={role === 'admin' ? '/admin-dashboard' : '/user-dashboard'}
+        replace
+      />
+    );
   }
 
   return children;
@@ -33,13 +40,6 @@ const ProtectedRoute = ({ children, allowedRole }) => {
 
 // ================= PUBLIC ROUTE =================
 const PublicRoute = ({ children }) => {
-  const isAuth = localStorage.getItem('isAuthenticated');
-
-  // ⚠️ IMPORTANT: Do NOT redirect automatically (prevents loop)
-  if (isAuth === 'true') {
-    return children;
-  }
-
   return children;
 };
 
@@ -57,7 +57,6 @@ function App() {
           </PublicRoute>
         }
       />
-<<<<<<< HEAD
 
       {/* USER DASHBOARD */}
       <Route
@@ -78,10 +77,6 @@ function App() {
           </ProtectedRoute>
         }
       />
-=======
-     <Route path="/user-dashboard" element={<UserDashboard />} />
-     <Route path="/admin-dashboard" element={<AdminDashboard />} />
->>>>>>> 84604bd1ebacc3eace23c92834be38e1e1b6a15b
 
       <Route path="/signup" element={<SignupWizard />} />
       <Route path="/create-account" element={<SignupSteps />} />
