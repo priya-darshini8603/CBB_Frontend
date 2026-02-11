@@ -1,128 +1,114 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Landmark, Eye, EyeOff, Lock } from 'lucide-react';
+import { Landmark, Eye, EyeOff, Lock, User } from 'lucide-react';
 import './Login.css';
+
 import api from '../services/api';
 
 const Login = () => {
   const navigate = useNavigate();
-
+  const [role, setRole] = useState('user'); // 'user' or 'admin'
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
-  const [otp, setOtp] = useState('');
-  const [showOtpBox, setShowOtpBox] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // ================= LOGIN =================
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
 
     try {
-      const res = await api.post('/auth/login', {
-        email: id,
-        password: password
-      });
+      // const response = await api.post('/auth/login', {
+      //   email: id, // Assuming 'id' is email/username based on backend
+      //   password: password,
+      //   role: role.toUpperCase() // Adjust if backend expects specific format
+      // });
 
-      if (res.data === "OTP_SENT") {
-        setShowOtpBox(true);
-        alert("OTP sent ✔ Check Spring Boot console");
-      }
+      // Simulate successful response
+      const response = {
+        data: {
+          token: 'dummy-token-12345',
+          role: role // User the selected role
+        }
+      };
 
-    } catch (err) {
-      console.error("Login Error:", err);
-      const responseData = err.response?.data;
-      const msg = typeof responseData === 'object' ? responseData.message : responseData;
+      // Assuming response.data contains { token, role, ... }
+      const { token, role: userRole } = response.data;
 
-      if (msg === "USER_NOT_FOUND") setError("User not registered");
-      else if (msg === "INVALID_PASSWORD") setError("Wrong password");
-      else setError(msg || "Login failed");
-    }
-
-    setIsLoading(false);
-  };
-
-  // ================= VERIFY OTP =================
-  const verifyOtp = async () => {
-    if (otp.length !== 6) {
-      setError("Enter valid OTP");
-      return;
-    }
-
-    setIsLoading(true);
-    setError('');
-
-    try {
-      const res = await api.post('/auth/verify-otp', {
-        email: id,
-        otp: otp
-      });
-
-      const token = res.data;
-
-      // 🔐 SAVE TOKEN
-      localStorage.setItem('token', token);
       localStorage.setItem('isAuthenticated', 'true');
+      localStorage.setItem('token', token);
+      localStorage.setItem('role', userRole || role); // Fallback to selected role if not in response
 
-      // 🔎 READ ROLE AND USER ID FROM JWT
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const roleFromToken = payload.role; // ADMIN / CUSTOMER
-      const userId = payload.userId;
-
-      // ⭐ NORMALIZE ROLE
-      const role = roleFromToken === "ADMIN" ? "admin" : "user";
-
-      // 🔐 SAVE ROLE AND USER ID
-      localStorage.setItem('role', role);
-      localStorage.setItem('userId', userId);
-
-      // 🚀 REDIRECT
-      if (role === "admin") {
+      if (role === 'admin') {
         navigate('/admin-dashboard');
       } else {
         navigate('/user-dashboard');
       }
-
     } catch (err) {
-      console.log(err);
-      setError("Invalid or expired OTP");
+      console.error('Login failed', err);
+      setError(err.response?.data?.message || 'Invalid credentials or server error.');
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   return (
     <div className="login-container">
       <div className="login-card">
-
+        {/* Header Icon */}
         <div className="icon-wrapper">
           <Landmark className="bank-icon" size={32} />
         </div>
 
+        {/* Title */}
         <h1 className="welcome-text">Welcome Back</h1>
+        <p className="subtitle-text">Securely log in to your banking dashboard</p>
 
+        {/* Role Toggle */}
+        <div className="role-toggle">
+          <button
+            type="button"
+            className={`toggle-btn ${role === 'user' ? 'active' : ''}`}
+            onClick={() => { setRole('user'); setError(''); }}
+          >
+            User
+          </button>
+          <button
+            type="button"
+            className={`toggle-btn ${role === 'admin' ? 'active' : ''}`}
+            onClick={() => { setRole('admin'); setError(''); }}
+          >
+            Admin
+          </button>
+        </div>
+
+        {/* Login Form */}
         <form onSubmit={handleLogin} className="login-form">
-
-          {/* EMAIL */}
+          {/* Username Field */}
           <div className="form-group">
-            <label>Email</label>
-            <input
-              type="email"
-              value={id}
-              onChange={(e) => setId(e.target.value)}
-              required
-            />
+            <label htmlFor="id">Username or Client ID</label>
+            <div className="input-wrapper">
+              <input
+                type="text"
+                id="id"
+                placeholder="Enter your ID"
+                value={id}
+                onChange={(e) => setId(e.target.value)}
+                required
+              />
+            </div>
           </div>
 
-          {/* PASSWORD */}
+          {/* Password Field */}
           <div className="form-group">
-            <label>Password</label>
+            <label htmlFor="password">Password</label>
             <div className="input-wrapper">
               <input
                 type={showPassword ? 'text' : 'password'}
+                id="password"
+                placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -131,38 +117,30 @@ const Login = () => {
                 type="button"
                 className="eye-btn"
                 onClick={() => setShowPassword(!showPassword)}
+                aria-label="Toggle password visibility"
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
           </div>
 
+          {/* Error Message */}
           {error && <div className="error-message">{error}</div>}
 
-          <button className="submit-btn" disabled={isLoading}>
-            <Lock size={16} />
-            {isLoading ? "Please wait..." : "Sign In"}
+          {/* Forgot Password */}
+          <div className="forgot-password">
+            <a href="#" onClick={(e) => { e.preventDefault(); navigate('/forgot-password'); }}>Forgot password?</a>
+          </div>
+
+          {/* Submit Button */}
+          <button type="submit" className="submit-btn">
+            <Lock size={16} className="btn-icon" /> Sign In
           </button>
 
-          {/* OTP BOX */}
-          {showOtpBox && (
-            <div className="otp-box">
-              <label>Enter OTP</label>
-              <input
-                type="text"
-                maxLength={6}
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-              />
-
-              <button
-                type="button"
-                className="submit-btn"
-                onClick={verifyOtp}
-                disabled={isLoading}
-              >
-                {isLoading ? "Verifying..." : "Verify OTP"}
-              </button>
+          {/* Sign Up Link */}
+          {role === 'user' && (
+            <div className="signup-text">
+              Don't have an account? <span className="signup-link" onClick={() => navigate('/signup')}>Sign up</span>
             </div>
           )}
         </form>
