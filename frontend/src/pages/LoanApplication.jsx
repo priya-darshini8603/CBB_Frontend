@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Landmark, ArrowLeft, ArrowRight, ChevronDown, Bell, UserCircle } from 'lucide-react';
 import './LoanApplication.css';
+import api from '../services/api';
 
 const LoanApplication = () => {
     const navigate = useNavigate();
     const [step, setStep] = useState(1);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState({
         loanType: 'Personal Loan',
         amount: '',
@@ -37,15 +39,58 @@ const LoanApplication = () => {
         setStep(1);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!formData.employerName || !formData.monthlyIncome || !formData.yearsWithEmployer) {
             setError('Please fill in all details before submitting.');
             return;
         }
         setError('');
-        console.log('Loan Application Submitted:', formData);
-        navigate('/user-dashboard');
+        setIsSubmitting(true);
+
+        try {
+            const customerId = localStorage.getItem('userId');
+            if (!customerId) {
+                setError('User session not found. Please login again.');
+                return;
+            }
+
+            // Map frontend loan type to backend enum
+            const loanTypeMap = {
+                'Personal Loan': 'PERSONAL',
+                'Home Loan': 'HOME',
+                'Auto Loan': 'CAR'
+            };
+
+            // Parse tenure months
+            const tenureMonths = parseInt(formData.tenure.split(' ')[0]);
+
+            // Simple EMI calculation (dummy logic for demo)
+            const amount = parseFloat(formData.amount);
+            const monthlyPrincipal = amount / tenureMonths;
+            const emi = (monthlyPrincipal * 1.08).toFixed(2); // Adding 8% dummy interest
+
+            const payload = {
+                customerId: parseInt(customerId),
+                salary: parseFloat(formData.monthlyIncome),
+                loanAmount: amount,
+                creditScore: 750, // Default dummy credit score
+                loanType: loanTypeMap[formData.loanType],
+                emi: parseFloat(emi)
+            };
+
+            console.log('Submitting Loan Application:', payload);
+            const response = await api.post('/api/loans', payload);
+            console.log('Loan Application Response:', response.data);
+
+            alert('Loan application submitted successfully!');
+            navigate('/user-dashboard');
+        } catch (err) {
+            console.error('Loan Submission Error:', err);
+            setError(err.response?.data?.message || 'Failed to submit loan application. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -219,8 +264,8 @@ const LoanApplication = () => {
                                 <button className="btn-cancel" onClick={handleBack}>
                                     <ArrowLeft size={16} /> Back
                                 </button>
-                                <button className="btn-next" onClick={handleSubmit}>
-                                    Submit Application <ArrowRight size={16} />
+                                <button className="btn-next" onClick={handleSubmit} disabled={isSubmitting}>
+                                    {isSubmitting ? 'Submitting...' : 'Submit Application'} <ArrowRight size={16} />
                                 </button>
                             </div>
                         </div>

@@ -4,20 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { Landmark, UserCircle, ArrowRight, ArrowLeft } from 'lucide-react';
 import './DepositWithdraw.css';
 
-const api = axios.create({
-    baseURL: "http://localhost:8080"
-});
-
-api.interceptors.request.use(config => {
-    const token = localStorage.getItem("token");
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-});
-
 const DepositWithdraw = () => {
     const navigate = useNavigate();
+    const userId = 1; 
 
     const [accounts, setAccounts] = useState([]);
     const [step, setStep] = useState(1);
@@ -32,16 +21,12 @@ const DepositWithdraw = () => {
         description: ''
     });
 
-    // 🔥 GET LOGGED-IN USER ACCOUNTS (SECURE)
+    // ================= FETCH ACCOUNTS =================
     useEffect(() => {
-        api.get("/accounts/my-accounts")
+        axios.get(`http://localhost:8080/accounts/customer/${userId}`)
             .then(res => setAccounts(res.data))
-            .catch(err => {
-                console.error("Account load failed", err);
-                setError("Session expired. Please login again.");
-                navigate('/login');
-            });
-    }, [navigate]);
+            .catch(err => console.error("Account load failed", err));
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -75,19 +60,19 @@ const DepositWithdraw = () => {
             let response;
 
             if (formData.type === "Deposit") {
-                response = await api.post("/bank/deposit", {
+                response = await axios.post("http://localhost:8080/bank/deposit", {
                     accountNumber: Number(formData.accountNumber),
                     amount: Number(formData.amount),
                     description: formData.description
                 });
             } else if (formData.type === "Withdraw") {
-                response = await api.post("/bank/withdraw", {
+                response = await axios.post("http://localhost:8080/bank/withdraw", {
                     accountNumber: Number(formData.accountNumber),
                     amount: Number(formData.amount),
                     description: formData.description
                 });
             } else {
-                response = await api.post("/bank/transfer", {
+                response = await axios.post("http://localhost:8080/bank/transfer", {
                     fromAccountNumber: Number(formData.fromAccount),
                     toAccountNumber: Number(formData.toAccount),
                     amount: Number(formData.amount),
@@ -99,7 +84,7 @@ const DepositWithdraw = () => {
             navigate('/user-dashboard');
 
         } catch (err) {
-            const message = err.response?.data?.message || "Transaction failed";
+            let message = err.response?.data?.message || "Transaction failed";
             alert("❌ " + message);
         }
     };
@@ -123,6 +108,7 @@ const DepositWithdraw = () => {
 
             <div className="dw-content">
 
+                {/* STEP 1 */}
                 {step === 1 && (
                     <div className="dw-card">
                         <h1 className="dw-title">Transaction</h1>
@@ -137,6 +123,7 @@ const DepositWithdraw = () => {
                             </select>
                         </div>
 
+                        {/* Deposit & Withdraw */}
                         {(formData.type === 'Deposit' || formData.type === 'Withdraw') && (
                             <div className="form-group">
                                 <label>Select Account</label>
@@ -151,6 +138,7 @@ const DepositWithdraw = () => {
                             </div>
                         )}
 
+                        {/* Transfer */}
                         {formData.type === 'Transfer' && (
                             <>
                                 <div className="form-group">
@@ -202,6 +190,7 @@ const DepositWithdraw = () => {
                     </div>
                 )}
 
+                {/* STEP 2 */}
                 {step === 2 && (
                     <div className="dw-card">
                         <h1 className="dw-title center-text">Confirm Transaction</h1>
