@@ -15,9 +15,9 @@ import './UserDashboard.css';
 const UserDashboard = () => {
     const navigate = useNavigate();
 
+    // 🚪 LOGOUT
     const handleLogout = () => {
-        localStorage.removeItem('isAuthenticated');
-        localStorage.removeItem('role');
+        localStorage.clear();
         navigate('/');
     };
 
@@ -62,23 +62,23 @@ const UserDashboard = () => {
 
     return (
         <div className="dashboard-container">
-            {/* Header */}
+
             <header className="dashboard-header">
                 <div className="header-left">
                     <div className="header-icon">
                         <Landmark size={24} />
                     </div>
-                    <div className="header-text">
+                    <div>
                         <h1>User Dashboard</h1>
-                        <p>Welcome back</p>
+                        <p>Welcome back 👋</p>
                     </div>
                 </div>
+
                 <button onClick={handleLogout} className="logout-btn">
                     <LogOut size={16} /> Logout
                 </button>
             </header>
 
-            {/* Grid Content */}
             <div className="dashboard-content">
                 <div className="cards-grid">
                     {actions.map((action, index) => (
@@ -86,12 +86,9 @@ const UserDashboard = () => {
                             key={index}
                             className="action-card"
                             onClick={action.onClick}
-                            style={{ cursor: action.onClick ? 'pointer' : 'default' }}
                         >
-                            <div className="card-icon">
-                                {action.icon}
-                            </div>
-                            <div className="card-info">
+                            <div className="card-icon">{action.icon}</div>
+                            <div>
                                 <h3>{action.title}</h3>
                                 <p>{action.desc}</p>
                             </div>
@@ -99,6 +96,7 @@ const UserDashboard = () => {
                     ))}
                 </div>
             </div>
+
         </div>
     );
 };
