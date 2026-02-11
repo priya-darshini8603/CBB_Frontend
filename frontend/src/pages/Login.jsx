@@ -33,13 +33,11 @@ const Login = () => {
       }
 
     } catch (err) {
-      console.error("Login Error:", err);
-      const responseData = err.response?.data;
-      const msg = typeof responseData === 'object' ? responseData.message : responseData;
+      const msg = err.response?.data;
 
       if (msg === "USER_NOT_FOUND") setError("User not registered");
       else if (msg === "INVALID_PASSWORD") setError("Wrong password");
-      else setError(msg || "Login failed");
+      else setError("Login failed");
     }
 
     setIsLoading(false);
@@ -67,17 +65,15 @@ const Login = () => {
       localStorage.setItem('token', token);
       localStorage.setItem('isAuthenticated', 'true');
 
-      // 🔎 READ ROLE AND USER ID FROM JWT
+      // 🔎 READ ROLE FROM JWT
       const payload = JSON.parse(atob(token.split('.')[1]));
       const roleFromToken = payload.role; // ADMIN / CUSTOMER
-      const userId = payload.userId;
 
       // ⭐ NORMALIZE ROLE
       const role = roleFromToken === "ADMIN" ? "admin" : "user";
 
-      // 🔐 SAVE ROLE AND USER ID
+      // 🔐 SAVE ROLE
       localStorage.setItem('role', role);
-      localStorage.setItem('userId', userId);
 
       // 🚀 REDIRECT
       if (role === "admin") {
