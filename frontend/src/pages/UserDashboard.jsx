@@ -58,6 +58,12 @@ const UserDashboard = () => {
             desc: 'Check loan application status',
             onClick: () => navigate('/loan-status')
         },
+        {
+            icon: <Banknote size={24} />,
+            title: 'My Loan EMIs',
+            desc: 'View EMI amount for all active loans',
+            onClick: () => navigate('/loan-emi')
+        }
     ];
 
     return (

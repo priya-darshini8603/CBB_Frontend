@@ -10,6 +10,7 @@ import SignupSteps from './pages/SignupSteps';
 import ForgotPassword from './pages/ForgotPassword';
 import DepositWithdraw from './pages/DepositWithdraw';
 import LoanApplication from './pages/LoanApplication';
+import LoanEmi from './pages/LoanEmi';
 import LoanStatus from './pages/LoanStatus';
 import TransactionHistory from './pages/TransactionHistory';
 import AccountBalance from './pages/AccountBalance';
@@ -89,7 +90,7 @@ function App() {
       <Route path="/account-balance" element={<AccountBalance />} />
       <Route path="/loan-approval" element={<LoanApproval />} />
       <Route path="/admin-transactions" element={<AdminTransactionHistory />} />
-
+      <Route path="/loan-emi" element={<LoanEmi/>}/>
       {/* DEFAULT */}
       <Route path="*" element={<Navigate to="/" replace />} />
 
