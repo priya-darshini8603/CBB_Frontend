@@ -57,6 +57,7 @@ function App() {
           </PublicRoute>
         }
       />
+<<<<<<< HEAD
 
       {/* USER DASHBOARD */}
       <Route
@@ -77,6 +78,10 @@ function App() {
           </ProtectedRoute>
         }
       />
+=======
+     <Route path="/user-dashboard" element={<UserDashboard />} />
+     <Route path="/admin-dashboard" element={<AdminDashboard />} />
+>>>>>>> 84604bd1ebacc3eace23c92834be38e1e1b6a15b
 
       <Route path="/signup" element={<SignupWizard />} />
       <Route path="/create-account" element={<SignupSteps />} />

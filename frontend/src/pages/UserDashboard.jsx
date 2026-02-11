@@ -30,8 +30,8 @@ const UserDashboard = () => {
         },
         {
             icon: <Banknote size={24} />,
-            title: 'Deposit / Transfer',
-            desc: 'Manage your funds',
+            title: 'Manage Money',
+            desc: 'Deposit / Withdraw / Transfer',
             onClick: () => navigate('/deposit-withdraw')
         },
         {
