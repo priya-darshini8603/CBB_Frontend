@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-
 import Login from './pages/Login';
 import UserDashboard from './pages/UserDashboard';
 import AdminDashboard from './pages/AdminDashboard';
@@ -15,40 +14,38 @@ import AccountBalance from './pages/AccountBalance';
 import LoanApproval from './pages/LoanApproval';
 import AdminTransactionHistory from './pages/AdminTransactionHistory';
 
-
-// ================= PROTECTED ROUTE =================
+// Protected Route Component
 const ProtectedRoute = ({ children, allowedRole }) => {
-  const isAuth = localStorage.getItem('isAuthenticated');
-  const role = localStorage.getItem('role');
+  const isAuthenticated = localStorage.getItem('isAuthenticated');
+  const userRole = localStorage.getItem('role');
 
-  if (isAuth !== 'true') {
+  if (!isAuthenticated) {
     return <Navigate to="/" replace />;
   }
 
-  if (allowedRole && role !== allowedRole) {
-    return (
-      <Navigate
-        to={role === 'admin' ? '/admin-dashboard' : '/user-dashboard'}
-        replace
-      />
-    );
+  if (allowedRole && userRole !== allowedRole) {
+    // Redirect to correct dashboard if role doesn't match
+    return <Navigate to={userRole === 'admin' ? '/admin-dashboard' : '/user-dashboard'} replace />;
   }
 
   return children;
 };
 
-
-// ================= PUBLIC ROUTE =================
+// Public Route (redirects to dashboard if already logged in)
 const PublicRoute = ({ children }) => {
+  const isAuthenticated = localStorage.getItem('isAuthenticated');
+  const userRole = localStorage.getItem('role');
+
+  if (isAuthenticated) {
+    return <Navigate to={userRole === 'admin' ? '/admin-dashboard' : '/user-dashboard'} replace />;
+  }
+
   return children;
 };
-
 
 function App() {
   return (
     <Routes>
-
-      {/* LOGIN */}
       <Route
         path="/"
         element={
@@ -57,26 +54,8 @@ function App() {
           </PublicRoute>
         }
       />
-
-      {/* USER DASHBOARD */}
-      <Route
-        path="/user-dashboard"
-        element={
-          <ProtectedRoute allowedRole="user">
-            <UserDashboard />
-          </ProtectedRoute>
-        }
-      />
-
-      {/* ADMIN DASHBOARD */}
-      <Route
-        path="/admin-dashboard"
-        element={
-          <ProtectedRoute allowedRole="admin">
-            <AdminDashboard />
-          </ProtectedRoute>
-        }
-      />
+     <Route path="/user-dashboard" element={<UserDashboard />} />
+     <Route path="/admin-dashboard" element={<AdminDashboard />} />
 
       <Route path="/signup" element={<SignupWizard />} />
       <Route path="/create-account" element={<SignupSteps />} />
@@ -88,10 +67,7 @@ function App() {
       <Route path="/account-balance" element={<AccountBalance />} />
       <Route path="/loan-approval" element={<LoanApproval />} />
       <Route path="/admin-transactions" element={<AdminTransactionHistory />} />
-
-      {/* DEFAULT */}
       <Route path="*" element={<Navigate to="/" replace />} />
-
     </Routes>
   );
 }
