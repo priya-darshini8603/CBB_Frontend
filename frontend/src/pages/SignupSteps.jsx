@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Landmark } from "lucide-react";
 import "./SignupSteps.css";
 import api from "../services/api";
+import { toast } from 'react-toastify';
 
 const SignupSteps = () => {
   const navigate = useNavigate();
@@ -55,7 +56,7 @@ const SignupSteps = () => {
         initialDeposit: Number(form.deposit),
       });
 
-      alert("Account Created Successfully ✅");
+      toast.success("Account Created Successfully ✅");
       navigate("/user-dashboard");
     } catch (err) {
       console.error(err);

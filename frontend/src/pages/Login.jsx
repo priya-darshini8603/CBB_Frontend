@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Landmark, Eye, EyeOff, Lock } from 'lucide-react';
 import './Login.css';
 import api from '../services/api';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -29,7 +30,9 @@ const Login = () => {
 
       if (res.data === "OTP_SENT") {
         setShowOtpBox(true);
-        alert("OTP sent ✔ Check Spring Boot console");
+
+        toast.success("OTP sent ✔ Check Spring Boot console.");
+
       }
 
     } catch (err) {

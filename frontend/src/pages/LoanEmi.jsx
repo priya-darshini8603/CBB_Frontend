@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Landmark, ArrowLeft, UserCircle } from "lucide-react";
-import "./TransactionHistory.css"; // reuse same CSS
+import "./TransactionHistory.css";
 
 const LoanEmi = () => {
     const navigate = useNavigate();

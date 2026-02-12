@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Landmark, ArrowLeft, ArrowRight, ChevronDown, Bell, UserCircle } from 'lucide-react';
 import './LoanApplication.css';
+import { toast } from 'react-toastify';
+
 
 const LoanApplication = () => {
     const navigate = useNavigate();
@@ -93,7 +95,7 @@ const handleSubmit = async (e) => {
         const data = await res.json();
         console.log("Loan Created:", data);
 
-        alert("Loan application submitted successfully! Await admin approval.");
+        toast.success("Loan application submitted successfully! Await admin approval.");
 
         navigate('/user-dashboard');
 

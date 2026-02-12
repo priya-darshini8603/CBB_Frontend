@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Landmark, UserCircle, ArrowRight, ArrowLeft } from 'lucide-react';
 import './DepositWithdraw.css';
+import { toast } from 'react-toastify';
 
 const api = axios.create({
     baseURL: "http://localhost:8080"
@@ -94,13 +95,12 @@ const DepositWithdraw = () => {
                     description: formData.description
                 });
             }
-
-            alert(response.data.message || "Transaction Successful!");
+            toast.success(response.data.message || "Transaction Successful!");
             navigate('/user-dashboard');
 
         } catch (err) {
             const message = err.response?.data?.message || "Transaction failed";
-            alert("❌ " + message);
+            toast.error("❌ " + message);
         }
     };
 

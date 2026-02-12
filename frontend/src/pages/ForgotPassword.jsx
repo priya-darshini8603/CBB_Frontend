@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import api from "../services/api";
 import "./ForgotPassword.css";
+import { toast } from 'react-toastify';
 
 const ForgotPassword = () => {
 
@@ -30,11 +31,11 @@ const ForgotPassword = () => {
         phone: cleanPhone
       });
 
-      alert("OTP Sent ✔ Check backend console/Phone Number");
+      toast.success("OTP Sent ✔ Check backend console/Email");
       setStep(2);
     } catch (err) {
       setError(
-        err.response?.data || "Phone number not registered"
+        err.response?.data || "Email not registered"
       );
     }
 
@@ -89,7 +90,7 @@ const ForgotPassword = () => {
         newPassword: newPassword
       });
 
-      alert("Password Reset Successful ✔ Login now");
+      toast.success("Password Reset Successful ✔ Login now");
       window.location.href = "/";
     } catch (err) {
       setError(

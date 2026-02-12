@@ -6,6 +6,8 @@ import Register from './pages/Register';
 import UserDashboard from './pages/UserDashboard';
 import UsersList from "./pages/UsersList";
 import AdminDashboard from './pages/AdminDashboard';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import SignupWizard from './pages/SignupWizard';
 import SignupSteps from './pages/SignupSteps';
 import ForgotPassword from './pages/ForgotPassword';
@@ -23,52 +25,79 @@ const ProtectedRoute = ({ children, allowedRole }) => {
   const isAuth = localStorage.getItem('isAuthenticated');
   const role = localStorage.getItem('role');
 
-  if (isAuth !== 'true') return <Navigate to="/" replace />;
+  if (isAuth !== 'true') {
+    return <Navigate to="/" replace />;
+  }
 
   if (allowedRole && role !== allowedRole) {
-    return <Navigate to={role === 'admin' ? '/admin-dashboard' : '/user-dashboard'} replace />;
+    return (
+      <Navigate
+        to={role === 'admin' ? '/admin-dashboard' : '/user-dashboard'}
+        replace
+      />
+    );
   }
 
   return children;
 };
 
+
 function App() {
   return (
-    <Routes>
+    <>
+      <Routes>
 
-      <Route path="/" element={<Login />} />
+        <Route path="/" element={<Login />} />
 
-      <Route path="/user-dashboard"
-        element={<ProtectedRoute allowedRole="user"><UserDashboard /></ProtectedRoute>}
-      />
+        <Route
+          path="/user-dashboard"
+          element={
+            <ProtectedRoute allowedRole="user">
+              <UserDashboard />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route path="/admin-dashboard"
-        element={<ProtectedRoute allowedRole="admin"><AdminDashboard /></ProtectedRoute>}
-      />
+        <Route
+          path="/admin-dashboard"
+          element={
+            <ProtectedRoute allowedRole="admin">
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route path="/admin-users"
-        element={<ProtectedRoute allowedRole="admin"><UsersList /></ProtectedRoute>}
-      />
+        <Route
+          path="/admin-users"
+          element={
+            <ProtectedRoute allowedRole="admin">
+              <UsersList />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route path="/signup" element={<Register />} />
-      <Route path="/create-account" element={<SignupSteps />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/deposit-withdraw" element={<DepositWithdraw />} />
-      <Route path="/loan-application" element={<LoanApplication />} />
-      <Route path="/loan-status" element={<LoanStatus />} />
-      <Route path="/transaction-history" element={<TransactionHistory />} />
-      <Route path="/account-balance" element={<AccountBalance />} />
-      <Route path="/loan-approval" element={<LoanApproval />} />
-      <Route path="/admin-transactions" element={<AdminTransactionHistory />} />
-<<<<<<< HEAD
-      <Route path="/loan-emi" element={<LoanEmi/>}/>
-      {/* DEFAULT */}
-=======
+        <Route path="/signup" element={<Register />} />
+        <Route path="/create-account" element={<SignupSteps />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/deposit-withdraw" element={<DepositWithdraw />} />
+        <Route path="/loan-application" element={<LoanApplication />} />
+        <Route path="/loan-status" element={<LoanStatus />} />
+        <Route path="/transaction-history" element={<TransactionHistory />} />
+        <Route path="/account-balance" element={<AccountBalance />} />
+        <Route path="/loan-approval" element={<LoanApproval />} />
+        <Route path="/admin-transactions" element={<AdminTransactionHistory />} />
+        <Route path="/loan-emi" element={<LoanEmi />} />
 
->>>>>>> login-integration
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        <Route path="*" element={<Navigate to="/" replace />} />
+
+      </Routes>
+
+      {/* ToastContainer OUTSIDE Routes */}
+      <ToastContainer position="top-right" autoClose={3000} />
+    </>
   );
 }
+
+
 
 export default App;
