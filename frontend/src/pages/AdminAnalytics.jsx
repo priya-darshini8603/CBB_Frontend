@@ -1,27 +1,51 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, CartesianGrid
 } from "recharts";
+import api from "../services/api";
 import "./AdminAnalytics.css";
 
-const COLORS = ["#16a34a", "#f59e0b", "#dc2626"]; // Green, Orange, Red
+const COLORS = ["#16a34a", "#f59e0b", "#dc2626"];
 
 const AdminAnalytics = () => {
   const navigate = useNavigate();
 
-  // ===== SAMPLE DATA =====
-  const [loanStats] = useState([
-    { name: "Approved", value: 3 },
-    { name: "Pending", value: 3 },
-    { name: "Rejected", value: 1 }
-  ]);
+  const [loanStats, setLoanStats] = useState([]);
+  const [txnStats, setTxnStats] = useState([]);
 
-  const [txnStats] = useState([
-    { day: "Day 1", transactions: 8 },
-    { day: "Day 2", transactions: 5 }
-  ]);
+  useEffect(() => {
+    fetchLoanStats();
+    fetchTxnStats();
+  }, []);
+
+  // ===== LOAN PIE DATA =====
+  const fetchLoanStats = async () => {
+    try {
+      const res = await api.get("/admin/loan-status-stats");
+
+      const data = [
+        { name: "Approved", value: res.data.Approved || 0 },
+        { name: "Pending", value: res.data.Pending || 0 },
+        { name: "Rejected", value: res.data.Rejected || 0 }
+      ];
+
+      setLoanStats(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // ===== BAR DATA =====
+  const fetchTxnStats = async () => {
+    try {
+      const res = await api.get("/admin/monthly-transactions");
+      setTxnStats(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const totalLoans = loanStats.reduce((a, b) => a + b.value, 0);
 
@@ -35,7 +59,7 @@ const AdminAnalytics = () => {
 
       <div className="charts-grid">
 
-        {/* ===== DONUT CHART ===== */}
+        {/* ===== PIE ===== */}
         <div className="chart-card">
           <h2>Loan Status Distribution</h2>
 
@@ -57,7 +81,7 @@ const AdminAnalytics = () => {
               </Pie>
 
               <Tooltip />
-              <Legend verticalAlign="bottom" height={40} />
+              <Legend />
 
               <text x="50%" y="48%" textAnchor="middle" className="center-number">
                 {totalLoans}
@@ -69,33 +93,17 @@ const AdminAnalytics = () => {
           </ResponsiveContainer>
         </div>
 
-        {/* ===== BAR CHART (BLUE) ===== */}
+        {/* ===== BAR ===== */}
         <div className="chart-card">
           <h2>Monthly Transactions</h2>
 
           <ResponsiveContainer width="100%" height={420}>
             <BarChart data={txnStats}>
               <CartesianGrid strokeDasharray="3 3" />
-
-              <XAxis
-                dataKey="day"
-                label={{ value: "Day of Month", position: "insideBottom", offset: -5 }}
-              />
-
-              <YAxis
-                label={{ value: "Transactions", angle: -90, position: "insideLeft" }}
-              />
-
+              <XAxis dataKey="day" />
+              <YAxis />
               <Tooltip />
-
-              {/* BLUE BARS */}
-              <Bar
-                dataKey="transactions"
-                radius={[8, 8, 0, 0]}
-                fill="#3B82F6"         // Main Blue
-                stroke="#1D4ED8"       // Dark Blue Border
-                strokeWidth={1}
-              />
+              <Bar dataKey="transactions" fill="#2563eb" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

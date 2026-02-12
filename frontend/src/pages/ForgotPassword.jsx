@@ -3,7 +3,7 @@ import api from "../services/api";
 import { Phone, KeyRound, Lock, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "./ForgotPassword.css";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -16,31 +16,31 @@ const ForgotPassword = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // ================= SEND OTP =================
   const sendOtp = async () => {
-  setError("");
-  const cleanPhone = phone.replace(/\D/g, "");
+    setError("");
+    const cleanPhone = phone.replace(/\D/g, "");
 
-  if (cleanPhone.length !== 10) {
-    setError("Enter valid 10 digit phone number");
-    return;
-  }
+    if (cleanPhone.length !== 10) {
+      setError("Enter valid 10 digit phone number");
+      return;
+    }
 
-  setLoading(true);
+    setLoading(true);
 
-  try {
-    await api.post("/auth/forgot-password-phone", {
-      phone: cleanPhone,
-    });
+    try {
+      await api.post("/auth/forgot-password-phone", {
+        phone: cleanPhone,
+      });
 
-    toast.success("OTP sent successfully");
-    setStep(2);
+      toast.success("OTP sent successfully");
+      setStep(2);
+    } catch (err) {
+      setError(err.response?.data || "Phone number not registered");
+    }
 
-  } catch (err) {
-    setError(err.response?.data || "Phone number not registered");
-  }
-
-  setLoading(false);
-};
+    setLoading(false);
+  };
 
   // ================= VERIFY OTP =================
   const verifyOtp = async () => {
@@ -59,6 +59,7 @@ const ForgotPassword = () => {
         phone: cleanPhone,
         otp: otp,
       });
+
       setStep(3);
     } catch (err) {
       setError(err.response?.data || "Invalid or expired OTP");
@@ -85,11 +86,8 @@ const ForgotPassword = () => {
         newPassword: newPassword,
       });
 
-
       toast.success("Password Reset Successful ✔ Login now");
-      window.location.href = "/";
-
-
+      navigate("/");
     } catch (err) {
       setError(err.response?.data || "Reset failed");
     }
@@ -100,7 +98,6 @@ const ForgotPassword = () => {
   return (
     <div className="forgot-page">
       <div className="forgot-card">
-
         <button className="back-btn" onClick={() => navigate("/")}>
           <ArrowLeft size={16} /> Back to Login
         </button>
@@ -161,9 +158,7 @@ const ForgotPassword = () => {
                 type="password"
                 placeholder="Enter New Password"
                 value={newPassword}
-                onChange={(e) =>
-                  setNewPassword(e.target.value)
-                }
+                onChange={(e) => setNewPassword(e.target.value)}
               />
             </div>
 
