@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Landmark, Eye, EyeOff, Lock } from 'lucide-react';
+import { Landmark, Eye, EyeOff, Lock, Mail } from 'lucide-react';
 import './Login.css';
 import api from '../services/api';
 import { toast } from 'react-toastify';
@@ -16,7 +16,6 @@ const Login = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // ================= LOGIN =================
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
@@ -31,13 +30,15 @@ const Login = () => {
       if (res.data === "OTP_SENT") {
         setShowOtpBox(true);
 
+
         toast.success("OTP sent ✔ Check Spring Boot console.");
 
-      }
 
+        alert("OTP sent ✔ Check console/email");
+
+      }
     } catch (err) {
       const msg = err.response?.data;
-
       if (msg === "USER_NOT_FOUND") setError("User not registered");
       else if (msg === "INVALID_PASSWORD") setError("Wrong password");
       else setError("Login failed");
@@ -46,7 +47,6 @@ const Login = () => {
     setIsLoading(false);
   };
 
-  // ================= VERIFY OTP =================
   const verifyOtp = async () => {
     if (otp.length !== 6) {
       setError("Enter valid OTP");
@@ -63,21 +63,17 @@ const Login = () => {
       });
 
       const token = res.data;
-
       localStorage.setItem('token', token);
       localStorage.setItem('isAuthenticated', 'true');
 
       const payload = JSON.parse(atob(token.split('.')[1]));
-      const roleFromToken = payload.role;
-
-      const role = roleFromToken === "ADMIN" ? "admin" : "user";
+      const role = payload.role === "ADMIN" ? "admin" : "user";
       localStorage.setItem('role', role);
 
       if (role === "admin") navigate('/admin-dashboard');
       else navigate('/user-dashboard');
 
-    } catch (err) {
-      console.log(err);
+    } catch {
       setError("Invalid or expired OTP");
     }
 
@@ -85,101 +81,106 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-card">
+    <div className="login-page">
 
-        <div className="icon-wrapper">
-          <Landmark className="bank-icon" size={32} />
+      <div className="login-wrapper">
+
+        {/* LEFT BRAND */}
+        <div className="brand">
+          <Landmark size={50} />
+          <h1>CoreBank</h1>
+          <p>Secure • Fast • Modern Banking</p>
         </div>
 
-        <h1 className="welcome-text">Welcome Back</h1>
+        {/* LOGIN CARD */}
+        <div className="card">
+          <h2>Welcome Back</h2>
+          <p className="subtitle">Login to your account</p>
 
-        <form onSubmit={handleLogin} className="login-form">
+          <form onSubmit={handleLogin}>
 
-          {/* EMAIL */}
-          <div className="form-group">
-            <label>Email</label>
-            <input
-              type="email"
-              value={id}
-              onChange={(e) => setId(e.target.value)}
-              required
-            />
-          </div>
+            <div className="input">
+              <Mail size={16} />
+              <input
+                type="email"
+                placeholder="Email"
+                value={id}
+                onChange={(e) => setId(e.target.value)}
+                required
+              />
+            </div>
 
-          {/* PASSWORD */}
-          <div className="form-group">
-            <label>Password</label>
-            <div className="input-wrapper">
+            <div className="input">
+              <Lock size={16} />
               <input
                 type={showPassword ? 'text' : 'password'}
+                placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
+
               <button
                 type="button"
-                className="eye-btn"
+                className="eye"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
-          </div>
 
-          <p className="forgot-link">
-  <span onClick={() => navigate("/forgot-password")}>
-    Forgot Password?
-  </span>
-</p>
+            <p className="forgot" onClick={() => navigate("/forgot-password")}>
+              Forgot Password?
+            </p>
 
-          {/* ERROR + REGISTER BUTTON */}
-          {error && (
-            <div className="error-message">
-              {error}
+            {/* ERROR + REGISTER BUTTON */}
+            {error && (
+              <div className="error">
 
-              {error === "User not registered" && (
-                <div style={{ marginTop: "10px" }}>
+                {error}
+
+                {/* ONLY when user not registered */}
+                {error === "User not registered" && (
                   <button
                     type="button"
-                    className="submit-btn"
-                    style={{ background: "#16a34a" }}
+                    className="register-btn"
                     onClick={() => navigate('/signup')}
                   >
-                    Register Now
+                    Create New Account
                   </button>
-                </div>
-              )}
-            </div>
-          )}
+                )}
 
-          <button className="submit-btn" disabled={isLoading}>
-            <Lock size={16} />
-            {isLoading ? "Please wait..." : "Sign In"}
-          </button>
+              </div>
+            )}
 
-          {/* OTP BOX */}
-          {showOtpBox && (
-            <div className="otp-box">
-              <label>Enter OTP</label>
-              <input
-                type="text"
-                maxLength={6}
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-              />
+            <button className="btn" disabled={isLoading}>
+              {isLoading ? "Please wait..." : "Sign In"}
+            </button>
 
-              <button
-                type="button"
-                className="submit-btn"
-                onClick={verifyOtp}
-                disabled={isLoading}
-              >
-                {isLoading ? "Verifying..." : "Verify OTP"}
-              </button>
-            </div>
-          )}
-        </form>
+            {showOtpBox && (
+              <div className="otp">
+                <label>Enter OTP</label>
+                <input
+                  type="text"
+                  maxLength={6}
+                  placeholder="6 digit OTP"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                />
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={verifyOtp}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Verifying..." : "Verify OTP"}
+                </button>
+              </div>
+            )}
+
+          </form>
+        </div>
+
       </div>
     </div>
   );

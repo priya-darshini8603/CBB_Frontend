@@ -8,7 +8,6 @@ import UsersList from "./pages/UsersList";
 import AdminDashboard from './pages/AdminDashboard';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import SignupWizard from './pages/SignupWizard';
 import SignupSteps from './pages/SignupSteps';
 import ForgotPassword from './pages/ForgotPassword';
 import DepositWithdraw from './pages/DepositWithdraw';
@@ -19,6 +18,7 @@ import TransactionHistory from './pages/TransactionHistory';
 import AccountBalance from './pages/AccountBalance';
 import LoanApproval from './pages/LoanApproval';
 import AdminTransactionHistory from './pages/AdminTransactionHistory';
+import AdminAnalytics from "./pages/AdminAnalytics";
 
 // ================= PROTECTED ROUTE =================
 const ProtectedRoute = ({ children, allowedRole }) => {
@@ -41,14 +41,18 @@ const ProtectedRoute = ({ children, allowedRole }) => {
   return children;
 };
 
-
 function App() {
   return (
     <>
       <Routes>
 
+        {/* PUBLIC */}
         <Route path="/" element={<Login />} />
+        <Route path="/signup" element={<Register />} />
+        <Route path="/create-account" element={<SignupSteps />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
+        {/* USER */}
         <Route
           path="/user-dashboard"
           element={
@@ -58,6 +62,61 @@ function App() {
           }
         />
 
+        <Route
+          path="/deposit-withdraw"
+          element={
+            <ProtectedRoute allowedRole="user">
+              <DepositWithdraw />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/loan-application"
+          element={
+            <ProtectedRoute allowedRole="user">
+              <LoanApplication />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/loan-status"
+          element={
+            <ProtectedRoute allowedRole="user">
+              <LoanStatus />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/transaction-history"
+          element={
+            <ProtectedRoute allowedRole="user">
+              <TransactionHistory />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/account-balance"
+          element={
+            <ProtectedRoute allowedRole="user">
+              <AccountBalance />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/loan-emi"
+          element={
+            <ProtectedRoute allowedRole="user">
+              <LoanEmi />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ADMIN */}
         <Route
           path="/admin-dashboard"
           element={
@@ -76,28 +135,41 @@ function App() {
           }
         />
 
-        <Route path="/signup" element={<Register />} />
-        <Route path="/create-account" element={<SignupSteps />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/deposit-withdraw" element={<DepositWithdraw />} />
-        <Route path="/loan-application" element={<LoanApplication />} />
-        <Route path="/loan-status" element={<LoanStatus />} />
-        <Route path="/transaction-history" element={<TransactionHistory />} />
-        <Route path="/account-balance" element={<AccountBalance />} />
-        <Route path="/loan-approval" element={<LoanApproval />} />
-        <Route path="/admin-transactions" element={<AdminTransactionHistory />} />
-        <Route path="/loan-emi" element={<LoanEmi />} />
+        <Route
+          path="/loan-approval"
+          element={
+            <ProtectedRoute allowedRole="admin">
+              <LoanApproval />
+            </ProtectedRoute>
+          }
+        />
 
+        <Route
+          path="/admin-transactions"
+          element={
+            <ProtectedRoute allowedRole="admin">
+              <AdminTransactionHistory />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin-analytics"
+          element={
+            <ProtectedRoute allowedRole="admin">
+              <AdminAnalytics />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* DEFAULT */}
         <Route path="*" element={<Navigate to="/" replace />} />
 
       </Routes>
 
-      {/* ToastContainer OUTSIDE Routes */}
       <ToastContainer position="top-right" autoClose={3000} />
     </>
   );
 }
-
-
 
 export default App;

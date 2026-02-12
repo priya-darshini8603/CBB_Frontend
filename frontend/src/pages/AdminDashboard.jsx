@@ -90,6 +90,16 @@ const AdminDashboard = () => {
             <p>View and delete users</p>
           </div>
         </div>
+        <div
+  className="admin-action-card"
+  onClick={() => navigate('/admin-analytics')}
+>
+  📊
+  <div>
+    <h3>Analytics</h3>
+    <p>View system charts & insights</p>
+  </div>
+</div>
 
       </div>
     </div>
