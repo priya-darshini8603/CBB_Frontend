@@ -16,40 +16,31 @@ const ForgotPassword = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // ================= SEND OTP =================
   const sendOtp = async () => {
-    setError("");
-    const cleanPhone = phone.replace(/\D/g, "");
+  setError("");
+  const cleanPhone = phone.replace(/\D/g, "");
 
-    if (cleanPhone.length !== 10) {
-      setError("Enter valid 10 digit phone number");
-      return;
-    }
+  if (cleanPhone.length !== 10) {
+    setError("Enter valid 10 digit phone number");
+    return;
+  }
 
-    setLoading(true);
+  setLoading(true);
 
-    try {
-<<<<<<< HEAD
-      await api.post("/auth/forgot-password-phone", {
-        phone: cleanPhone
-      });
+  try {
+    await api.post("/auth/forgot-password-phone", {
+      phone: cleanPhone,
+    });
 
-      toast.success("OTP Sent ✔ Check backend console/Email");
-      setStep(2);
-    } catch (err) {
-      setError(
-        err.response?.data || "Email not registered"
-      );
-=======
-      await api.post("/auth/forgot-password-phone", { phone: cleanPhone });
-      setStep(2);
-    } catch (err) {
-      setError(err.response?.data || "Phone number not registered");
->>>>>>> 7f65b87 (UI upgradation, Integration of Loan Approval/Rejection/Pending)
-    }
+    toast.success("OTP sent successfully");
+    setStep(2);
 
-    setLoading(false);
-  };
+  } catch (err) {
+    setError(err.response?.data || "Phone number not registered");
+  }
+
+  setLoading(false);
+};
 
   // ================= VERIFY OTP =================
   const verifyOtp = async () => {
@@ -98,8 +89,6 @@ const ForgotPassword = () => {
       toast.success("Password Reset Successful ✔ Login now");
       window.location.href = "/";
 
-      alert("Password Reset Successful ✔");
-      navigate("/");
 
     } catch (err) {
       setError(err.response?.data || "Reset failed");

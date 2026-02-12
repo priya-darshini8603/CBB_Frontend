@@ -31,10 +31,7 @@ const Login = () => {
         setShowOtpBox(true);
 
 
-        toast.success("OTP sent ✔ Check Spring Boot console.");
-
-
-        alert("OTP sent ✔ Check console/email");
+        toast.success("OTP sent ✔ Check console/email");
 
       }
     } catch (err) {
