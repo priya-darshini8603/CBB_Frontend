@@ -127,7 +127,6 @@
   border: 1px solid #ddd;
 }
 
-/* ================= REGISTER BUTTON (NEW) ================= */
 
 .register-btn {
   width: 100%;
@@ -144,4 +143,27 @@
 
 .register-btn:hover {
   background: #15803d;
+}
+
+/* FOOTER LINK */
+.login-footer {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.login-footer p {
+  color: #555;
+  margin: 0;
+}
+
+.login-footer span {
+  color: #2563eb;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.login-footer span:hover {
+  text-decoration: underline;
 }
