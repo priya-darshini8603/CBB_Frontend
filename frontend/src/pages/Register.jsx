@@ -11,42 +11,73 @@ const Register = () => {
     fullName: "",
     email: "",
     phone: "",
-    password: "",
-    role: "CUSTOMER"
+    password: ""
   });
 
+  const [detectedRole, setDetectedRole] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // ================= HANDLE INPUT =================
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Phone → allow only digits
     if (name === "phone") {
       const onlyNumbers = value.replace(/\D/g, "");
       setForm({ ...form, phone: onlyNumbers });
-    } else {
+    }
+
+    else if (name === "email") {
+      const email = value.toLowerCase().trim();
+      setForm({ ...form, email });
+
+      if (email.includes("@")) {
+        const domain = email.split("@")[1];
+
+        if (domain === "gmail.com") {
+          setDetectedRole("CUSTOMER");
+        } else if (domain === "bank.com") {
+          setDetectedRole("ADMIN");
+        } else {
+          setDetectedRole("INVALID");
+        }
+      } else {
+        setDetectedRole("");
+      }
+    }
+
+    else {
       setForm({ ...form, [name]: value });
     }
   };
 
-  // ================= REGISTER =================
+
   const register = async (e) => {
     e.preventDefault();
     setError("");
 
-    // 🔴 FRONTEND PHONE VALIDATION
     if (form.phone.length !== 10) {
       setError("Phone number must be exactly 10 digits");
+      return;
+    }
+
+    if (detectedRole === "INVALID" || !detectedRole) {
+      setError("Invalid email domain");
       return;
     }
 
     setLoading(true);
 
     try {
-      await api.post("/auth/register", form);
-      toast.success("Registered Successfully ✔ Please Login");
+      const res = await api.post("/auth/register", form);
+
+      if (res.data === "ADMIN") {
+        toast.success("Admin Registered Successfully ✔ Please Login");
+      } else if (res.data === "CUSTOMER") {
+        toast.success("User Registered Successfully ✔ Please Login");
+      } else {
+        toast.success("Registered Successfully ✔ Please Login");
+      }
+
       navigate("/");
     } catch (err) {
       setError(
@@ -62,78 +93,76 @@ const Register = () => {
   return (
     <div className="register-container">
       <div className="register-card">
+        <h2>Sign Up</h2>
 
-        <h2>Create Account</h2>
+<form onSubmit={register}>
 
-        <form onSubmit={register}>
+  <input
+    type="text"
+    name="fullName"
+    placeholder="Full Name"
+    value={form.fullName}
+    onChange={handleChange}
+    required
+  />
 
-          {/* FULL NAME */}
-          <input
-            type="text"
-            name="fullName"
-            placeholder="Full Name"
-            value={form.fullName}
-            onChange={handleChange}
-            required
-          />
+  <input
+    type="email"
+    name="email"
+    placeholder="Email"
+    value={form.email}
+    onChange={handleChange}
+    required
+  />
 
-          {/* EMAIL */}
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-            required
-          />
+  <input
+    type="tel"
+    name="phone"
+    placeholder="Enter 10-digit phone"
+    value={form.phone}
+    onChange={handleChange}
+    maxLength={10}
+    pattern="[0-9]{10}"
+    required
+  />
 
-          {/* PHONE */}
-          <input
-            type="tel"
-            name="phone"
-            placeholder="Enter 10-digit phone"
-            value={form.phone}
-            onChange={handleChange}
-            maxLength={10}
-            pattern="[0-9]{10}"
-            required
-          />
+  <input
+    type="password"
+    name="password"
+    placeholder="Password"
+    value={form.password}
+    onChange={handleChange}
+    required
+  />
 
-          {/* PASSWORD */}
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={handleChange}
-            required
-          />
+  {/* ROLE PREVIEW MOVED HERE */}
+  {detectedRole && (
+    <p className={
+      detectedRole === "ADMIN"
+        ? "role admin"
+        : detectedRole === "CUSTOMER"
+        ? "role user"
+        : "role invalid"
+    }>
+      {detectedRole === "INVALID"
+        ? "Invalid Email Domain"
+        : `Role: ${detectedRole}`}
+    </p>
+  )}
 
-          {/* ROLE */}
-          <select
-            name="role"
-            value={form.role}
-            onChange={handleChange}
-          >
-            <option value="CUSTOMER">User</option>
-            <option value="ADMIN">Admin</option>
-          </select>
+  {error && <p className="error">{error}</p>}
 
-          {/* ERROR MESSAGE */}
-          {error && <p className="error">{error}</p>}
+  <button disabled={loading}>
+    {loading ? "Registering..." : "Register"}
+  </button>
 
-          {/* BUTTON */}
-          <button disabled={loading}>
-            {loading ? "Registering..." : "Register"}
-          </button>
+  <p className="login-link">
+    Already have account?{" "}
+    <span onClick={() => navigate("/")}>Login</span>
+  </p>
 
-          {/* LOGIN LINK */}
-          <p className="login-link">
-            Already have account?{" "}
-            <span onClick={() => navigate("/")}>Login</span>
-          </p>
+</form>
 
-        </form>
       </div>
     </div>
   );

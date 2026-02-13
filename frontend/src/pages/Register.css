@@ -44,3 +44,20 @@
   color: #2563eb;
   cursor: pointer;
 }
+
+.role {
+  font-weight: 600;
+  margin-top: 5px;
+}
+
+.role.admin {
+  color: red;
+}
+
+.role.user {
+  color: green;
+}
+
+.role.invalid {
+  color: orange;
+}

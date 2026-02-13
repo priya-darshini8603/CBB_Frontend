@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import api from "../services/api";
-import { Phone, KeyRound, Lock, ArrowLeft } from "lucide-react";
+import { Mail, KeyRound, Lock, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "./ForgotPassword.css";
 import { toast } from "react-toastify";
@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 const ForgotPassword = () => {
   const navigate = useNavigate();
 
-  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
 
@@ -16,36 +16,34 @@ const ForgotPassword = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // ================= SEND OTP =================
+
   const sendOtp = async () => {
     setError("");
-    const cleanPhone = phone.replace(/\D/g, "");
 
-    if (cleanPhone.length !== 10) {
-      setError("Enter valid 10 digit phone number");
+    if (!email.includes("@")) {
+      setError("Enter valid email address");
       return;
     }
 
     setLoading(true);
 
     try {
-      await api.post("/auth/forgot-password-phone", {
-        phone: cleanPhone,
+      await api.post("/auth/forgot-password", {
+        email: email.trim().toLowerCase(),
       });
 
-      toast.success("OTP sent successfully");
+      toast.success("OTP sent to registered email ✔");
       setStep(2);
     } catch (err) {
-      setError(err.response?.data || "Phone number not registered");
+      setError(err.response?.data || "Email not registered");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
-  // ================= VERIFY OTP =================
+ 
   const verifyOtp = async () => {
     setError("");
-    const cleanPhone = phone.replace(/\D/g, "");
 
     if (otp.length !== 6) {
       setError("Enter valid 6 digit OTP");
@@ -55,23 +53,22 @@ const ForgotPassword = () => {
     setLoading(true);
 
     try {
-      await api.post("/auth/verify-phone-otp", {
-        phone: cleanPhone,
+      await api.post("/auth/verify-reset-otp", {
+        email: email.trim().toLowerCase(),
         otp: otp,
       });
 
+      toast.success("OTP Verified ✔");
       setStep(3);
     } catch (err) {
       setError(err.response?.data || "Invalid or expired OTP");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
-  // ================= RESET PASSWORD =================
   const resetPassword = async () => {
     setError("");
-    const cleanPhone = phone.replace(/\D/g, "");
 
     if (newPassword.length < 4) {
       setError("Password must be at least 4 characters");
@@ -81,23 +78,29 @@ const ForgotPassword = () => {
     setLoading(true);
 
     try {
-      await api.post("/auth/reset-password-phone", {
-        phone: cleanPhone,
+      await api.post("/auth/reset-password-otp", {
+        email: email.trim().toLowerCase(),
+        otp: otp,
         newPassword: newPassword,
       });
 
-      toast.success("Password Reset Successful ✔ Login now");
-      navigate("/");
+      toast.success("Password Reset Successful ✔");
+
+      setTimeout(() => {
+        navigate("/");
+      }, 1500);
+
     } catch (err) {
       setError(err.response?.data || "Reset failed");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
     <div className="forgot-page">
       <div className="forgot-card">
+
         <button className="back-btn" onClick={() => navigate("/")}>
           <ArrowLeft size={16} /> Back to Login
         </button>
@@ -105,19 +108,16 @@ const ForgotPassword = () => {
         <h2>Reset Your Password</h2>
         <p className="subtitle">Secure account recovery</p>
 
-        {/* STEP 1 → PHONE */}
+        {/* STEP 1 → EMAIL */}
         {step === 1 && (
           <div className="form">
             <div className="input">
-              <Phone size={16} />
+              <Mail size={16} />
               <input
-                type="tel"
-                placeholder="Registered Phone Number"
-                value={phone}
-                maxLength={10}
-                onChange={(e) =>
-                  setPhone(e.target.value.replace(/\D/g, ""))
-                }
+                type="email"
+                placeholder="Registered Email ID"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
@@ -127,7 +127,7 @@ const ForgotPassword = () => {
           </div>
         )}
 
-        {/* STEP 2 → OTP */}
+        {/* STEP 2 → VERIFY OTP */}
         {step === 2 && (
           <div className="form">
             <div className="input">
@@ -149,7 +149,7 @@ const ForgotPassword = () => {
           </div>
         )}
 
-        {/* STEP 3 → RESET PASSWORD */}
+        {/* STEP 3 → NEW PASSWORD */}
         {step === 3 && (
           <div className="form">
             <div className="input">

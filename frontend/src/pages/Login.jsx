@@ -63,14 +63,29 @@ const Login = () => {
       localStorage.setItem('token', token);
       localStorage.setItem('isAuthenticated', 'true');
 
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const role = payload.role === "ADMIN" ? "admin" : "user";
-      localStorage.setItem('role', role);
+      // 🛡️ DECODE JWT TO GET ROLE
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const userRole = payload.role; // Should be "ADMIN" or "CUSTOMER" (or "ROLE_ADMIN")
 
-      if (role === "admin") navigate('/admin-dashboard');
-      else navigate('/user-dashboard');
+        console.log("Decoded Role:", userRole); // Debugging
 
-    } catch {
+        if (userRole === "ADMIN" || userRole === "ROLE_ADMIN") {
+          localStorage.setItem('role', 'admin');
+          navigate('/admin-dashboard');
+        } else {
+          localStorage.setItem('role', 'user');
+          navigate('/user-dashboard');
+        }
+
+      } catch (e) {
+        console.error("Token decode error:", e);
+        // Fallback or default
+        localStorage.setItem('role', 'user');
+        navigate('/user-dashboard');
+      }
+
+    } catch (err) {
       setError("Invalid or expired OTP");
     }
 
@@ -137,15 +152,7 @@ const Login = () => {
                 {error}
 
                 {/* ONLY when user not registered */}
-                {error === "User not registered" && (
-                  <button
-                    type="button"
-                    className="register-btn"
-                    onClick={() => navigate('/signup')}
-                  >
-                    Create New Account
-                  </button>
-                )}
+
 
               </div>
             )}
@@ -153,6 +160,10 @@ const Login = () => {
             <button className="btn" disabled={isLoading}>
               {isLoading ? "Please wait..." : "Sign In"}
             </button>
+
+            <div className="login-footer">
+              <p>Don't have an account? <span onClick={() => navigate('/signup')}>Create Account</span></p>
+            </div>
 
             {showOtpBox && (
               <div className="otp">
