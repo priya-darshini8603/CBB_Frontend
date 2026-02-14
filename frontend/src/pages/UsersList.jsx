@@ -10,6 +10,7 @@ const UsersList = () => {
     fetchUsers();
   }, []);
 
+  // ================= FETCH USERS =================
   const fetchUsers = async () => {
     try {
       const res = await api.get("/admin/all-users");
@@ -19,15 +20,33 @@ const UsersList = () => {
     }
   };
 
-  const deleteUser = async (id) => {
-    if (!window.confirm("Delete this user?")) return;
+  // ================= DELETE USER =================
+  const deleteUser = async (id, name) => {
+    if (!window.confirm(`Delete ${name}?`)) return;
 
     try {
-      await api.delete(`/admin/delete-user/${id}`);
-      fetchUsers();
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(`http://localhost:8080/admin/users/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const msg = await res.text();
+
+      if (res.ok) {
+        alert(msg); // ✅ "John deleted successfully"
+
+        // remove user instantly (no refresh)
+        setUsers((prev) => prev.filter((u) => u.userId !== id));
+      } else {
+        alert(msg || "Delete failed");
+      }
     } catch (err) {
       console.error(err);
-      alert("Delete failed");
+      alert("Server error while deleting");
     }
   };
 
@@ -38,7 +57,10 @@ const UsersList = () => {
         {/* Header */}
         <div style={styles.header}>
           <h2 style={{ margin: 0 }}>👥 Manage Users</h2>
-          <button style={styles.backBtn} onClick={() => navigate("/admin-dashboard")}>
+          <button
+            style={styles.backBtn}
+            onClick={() => navigate("/admin-dashboard")}
+          >
             ← Back
           </button>
         </div>
@@ -70,21 +92,24 @@ const UsersList = () => {
                   <td style={styles.td}>{u.fullName}</td>
                   <td style={styles.td}>{u.email}</td>
                   <td style={styles.td}>{u.phone}</td>
+
                   <td style={styles.td}>
                     <span
                       style={{
                         ...styles.roleBadge,
-                        background: u.role === "ADMIN" ? "#fee2e2" : "#e0f2fe",
+                        background:
+                          u.role === "ADMIN" ? "#fee2e2" : "#e0f2fe",
                         color: u.role === "ADMIN" ? "#b91c1c" : "#0369a1",
                       }}
                     >
                       {u.role}
                     </span>
                   </td>
+
                   <td style={styles.td}>
                     <button
                       style={styles.deleteBtn}
-                      onClick={() => deleteUser(u.userId)}
+                      onClick={() => deleteUser(u.userId, u.fullName)}
                     >
                       Delete
                     </button>
@@ -94,17 +119,12 @@ const UsersList = () => {
             )}
           </tbody>
         </table>
-
       </div>
     </div>
   );
 };
 
 export default UsersList;
-
-
-
-
 
 /* ================= STYLES ================= */
 
@@ -144,7 +164,7 @@ const styles = {
   table: {
     width: "100%",
     borderCollapse: "separate",
-    borderSpacing: "0 10px", // space between rows
+    borderSpacing: "0 10px",
   },
 
   thead: {
@@ -159,7 +179,7 @@ const styles = {
   },
 
   td: {
-    padding: "14px 18px", // space inside columns
+    padding: "14px 18px",
     background: "white",
     fontSize: "14px",
   },
