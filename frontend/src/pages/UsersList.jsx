@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import { toast } from 'react-toastify';
 
 const UsersList = () => {
   const navigate = useNavigate();
@@ -37,16 +38,16 @@ const UsersList = () => {
       const msg = await res.text();
 
       if (res.ok) {
-        alert(msg); // ✅ "John deleted successfully"
+        toast.success(msg); 
 
         // remove user instantly (no refresh)
         setUsers((prev) => prev.filter((u) => u.userId !== id));
       } else {
-        alert(msg || "Delete failed");
+        toast.error(msg || "Delete failed");
       }
     } catch (err) {
       console.error(err);
-      alert("Server error while deleting");
+      toast.error("Server error while deleting");
     }
   };
 
@@ -126,7 +127,6 @@ const UsersList = () => {
 
 export default UsersList;
 
-/* ================= STYLES ================= */
 
 const styles = {
   page: {

@@ -99,7 +99,7 @@ const LoanEmi = () => {
             toast.success("EMI paid successfully");
             setPaymentSuccess(true);
 
-            await fetchLoans(); // refresh data after payment
+            await fetchLoans(); 
 
             setTimeout(() => {
                 setShowPayment(false);
@@ -197,7 +197,7 @@ const LoanEmi = () => {
                                 <p><strong>Total Interest:</strong> {formatMoney(selectedLoan.totalInterest)}</p>
                                 <p><strong>Total Repayment:</strong> {formatMoney(selectedLoan.totalRepayment)}</p>
                                 <p><strong>Remaining Balance:</strong> {formatMoney(selectedLoan.remainingBalance)}</p>
-                                <p><strong>EMI:</strong> {formatMoney(selectedLoan.emi)}</p>
+                                <p><strong>EMI per month:</strong> {formatMoney(selectedLoan.emi)}</p>
 
                                 <label>Select Account</label>
                                 <select
